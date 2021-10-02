@@ -6,21 +6,21 @@ class Product extends Controller{
     }
 
     function Index(){      
-        if (isset($_POST['btnsearch'])){
+        if (isset($_POST['btnsearch'])){//Kiem tra thanh search
             $search = $_POST['search'];
         }
         else{
             $search = "";         
         }
-        $count_product = $this->product->CountResult($search);
+        $count_product = $this->product->CountResult($search);//Dem tong so san pham tim duoc
         if (isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page']>0)
         {
-            $from = ($_GET['page']-1)*10;
+            $from = ($_GET['page']-1)*10;//Moi trang co 10 san pham
         }
         else{
             $from = 1;
         }
-        $list_product = $this->product->LoadProduct($search,$from);
+        $list_product = $this->product->LoadProduct($search,$from);//Load san pham theo phan trang va tim kiem
         $this->view("masterview",[
             "view"=>"product",
             "list_pro"=>$list_product,
@@ -29,11 +29,11 @@ class Product extends Controller{
         ]);
     }
 
-    function AddProduct(){
-        if (isset($_POST['submit_product'])){
+    function AddProduct(){//Them san pham
+        if (isset($_POST['submit_product'])){//Kiem tra ton tai nut xac nhan hay khong
             if ($this->product->AddProduct($_POST['name_product'],$_POST['category_product'],$_FILES['image_product']['name'])){
                 $file = $_FILES['image_product']['name'];
-                move_uploaded_file($_FILES['image_product']['tmp_name'],"uploads/".$file."");
+                move_uploaded_file($_FILES['image_product']['tmp_name'],"uploads/".$file."");//Chuyen file hinh anh tu local sang server
             }
             header ('Location:'.BASE_URL);
             
@@ -48,16 +48,16 @@ class Product extends Controller{
         
     }
 
-    function DelProduct(){
-        if (isset($_GET['id'])){
-            if (is_numeric($_GET['id'])&&$_GET['id']>0){
+    function DelProduct(){//Xoa san pham
+        if (isset($_GET['id'])){//Kiem tra id san pham co hay khong
+            if (is_numeric($_GET['id'])&&$_GET['id']>0){//Kiem tra id san pham hop le
                 $this->product->DeleteProduct($_GET['id']);
             }
         }
         header ('Location:'.BASE_URL);
     }
-    function EditProduct(){
-        if (isset($_GET['edit'])){
+    function EditProduct(){//Chinh sua san pham
+        if (isset($_GET['edit'])){// Xac nhan chinh sua
             if (is_numeric($_GET['edit'])&&$_GET['edit']>0){
                 if (!isset($_POST['submit_update'])){
                     $list_category = $this->product->LoadCategory();
@@ -84,10 +84,10 @@ class Product extends Controller{
         }
     }
 
-    function DetailProduct(){
+    function DetailProduct(){//Xem chi tiet san pham
         if (isset($_GET['detail'])){
             if (is_numeric($_GET['detail'])&&$_GET['detail']>0){
-                $singleproduct = $this->product->LoadSingleProduct($_GET['detail']);
+                $singleproduct = $this->product->LoadSingleProduct($_GET['detail']); //Load san pham theo id san pham da chon
                 $this->view("masterview",[
                     "view"=>"detail",
                     "single"=>$singleproduct
@@ -103,7 +103,7 @@ class Product extends Controller{
        
     }
 
-    function ProductCopy(){
+    function ProductCopy(){//Copy san pham
         if (isset($_GET['copy'])){
             if (is_numeric($_GET['copy'])&&$_GET['copy']>0){
                 $singleproduct = $this->product->LoadSingleProduct($_GET['copy']);
